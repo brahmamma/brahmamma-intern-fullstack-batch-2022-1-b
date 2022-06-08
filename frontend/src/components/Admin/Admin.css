@@ -1,0 +1,44 @@
+.logoutbtn{
+    float:right;
+    margin-right:20px;
+  }
+  .hide{
+    display:none;
+  }
+  .dis{
+    display: block;
+  }
+
+  .spanstyle{
+    float:right;
+  }
+  .imagestyle{
+    width:80px;
+    height:80px;
+    border-radius:50px;
+  }
+  .side{
+    height:100vh;
+  }
+  .productimage{
+    width:100%;
+  }
+  .buttonstyle{
+    margin-right:10px;
+  }
+  .available{
+    background-color:#3380FF;
+    color:white;
+    border:1px solid black;
+    margin-top:5px;
+  }
+  .unavailable{
+    background-color:#BCC6D6;
+   color:black;
+   border:1px solid black;
+   margin-top:5px;
+  
+  }
+  .selectstyle{
+    margin-bottom:30px;
+  }

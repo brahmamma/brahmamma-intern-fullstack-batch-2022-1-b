@@ -1,0 +1,22 @@
+.logoutbtn{
+    float:right;
+    margin-right:20px;
+  }
+  .hide{
+    display:none;
+  }
+  .dis{
+    display: block;
+  }
+  .spanstyle{
+    float:right;
+  }
+  .imagestyle{
+    width:80px;
+    height:80px;
+    border-radius:50px;
+  }
+  .side{
+    height:100vh;
+  }
+  
