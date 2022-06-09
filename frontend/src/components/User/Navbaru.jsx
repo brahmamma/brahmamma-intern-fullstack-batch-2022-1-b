@@ -25,6 +25,7 @@ export const Navbar = () => {
                     </ul>
                     
                 </div>
+                <center><h4 className='topbar'><i>Wal</i></h4></center>
        </nav>
     )
 }

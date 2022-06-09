@@ -23,6 +23,7 @@ export const Navbar = () => {
                     </ul>
                     
                 </div>
+                <center><h4 className='topbar'>Driver</h4></center>
        </nav>
     )
 }

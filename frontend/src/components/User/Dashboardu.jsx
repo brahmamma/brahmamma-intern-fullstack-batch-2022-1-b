@@ -2,13 +2,22 @@
 import React from 'react';
 import { useState ,useEffect} from 'react';
 import student1 from '../../student1.png'; 
+import admin from '../../admin.png'; 
 import {Container ,Card,Row, Col, Button} from 'react-bootstrap';
 import {useSelector,useDispatch} from 'react-redux'; 
 import {useFormik} from 'formik';
-import {getallproducts,getallcategories,getalladdresses,getallcartitems,getallorders,addtocart,removefromcart,incquan,decquan,addaddress} from '../../store/userSlice';
+import {getallproducts,getallcategories,getalladdresses,getallcartitems,getallorders,addtocart,removefromcart,incquan,decquan,addaddress,placeorder,removefromorders} from '../../store/userSlice';
  
 function Dashboard(){
+    const loggeduser=useSelector(state=>state.authentic.loggeduser);
+    const u=JSON.parse(localStorage.getItem('user'))
+    function handlelogout(){
+        window.localStorage.removeItem('token');
+        window.localStorage.removeItem('user');
+        window.location.href='/'
+    }
     const dispatch = useDispatch();
+   
    const allproducts=useSelector(state=>state.user.allproducts[0]);
    const allcategories=useSelector(state=>state.user.allcategories[0]);
     const allorders=useSelector(state=>state.user.allorders[0]);
@@ -17,6 +26,12 @@ function Dashboard(){
    const [productsearch,setproductsearch]=useState('')
    const [catfilter,setcatfilter]=useState(null)
    const [as,setas]=useState(0)
+   /*let [totalamount,settotalamount]=useState(0)
+   allcartitems.map((pro)=>{
+    settotalamount(totalamount+(parseInt(pro.quantity)*parseInt(pro.product.price)))
+  })*/
+  const [ordering,setordering]=useState({})
+   const [ordaddress,setordaddress]=useState({})
  
    useEffect(()=>{
     dispatch(getallproducts());
@@ -75,9 +90,7 @@ function Dashboard(){
     function handledecquan(id){
         dispatch(decquan(id))
     }
-    function handlebuy(product){
-        sets(4)
-    }
+    
     function handleas(){
         if(as===0){
             setas(1)
@@ -87,58 +100,69 @@ function Dashboard(){
         }
     }
     function addressadding(){
+        
         dispatch(addaddress(newaddr))
         sets(4)
         
+    }
+    function handleorder(product){
+        
+        const pro={
+            id:product.id,
+            quantity:1
+
+        }
+        setordering(pro)
+        sets(4)
+    }
+    
+    function handleplaceorder(prod,add){
+        dispatch(placeorder(prod,add))
+        sets(3)
 
     }
+    function handlecancel(id){
+        
+        dispatch(removefromorders(id))
+        sets(3)
+    }
+    function handlebuy(product){
+        const pro={
+            id:product.product.id,
+            quantity:product.quantity
+        }
+        handleremove(pro.id)
+        setordering(pro)
+        sets(4)
+        
+    }
+
     return (
-    <div className="col main pt-5 mt-3">
-         
-        <div className="row mb-3">
-        <div className="col-xl-3 col-sm-6 py-2" onClick={handleallproducts}>
-                <div className="card bg-success text-white h-100">
-                    <div className="card-body bg-primary" style={{backgroundColor:"#57b960"}}>
-                        
-                        <h6 className="text-uppercase">All products</h6>
-                    </div>
+        <div className='d-flex flex-column'>
+            <div className='row row-offcanvas row-offcanvas-left'>
+            <div className="col-md-3 col-lg-2 sidebar-offcanvas pl-0 side " id="sidebar" role="navigation" style={{backgroundColor:"#e9ecef"}}>
+                        <ul className="nav flex-column sticky-top pl-0 pt-5 p-3 mt-3 ">
+                            <center>
+                            <li className="nav-item mb-2 mt-3"><a className="nav-link text-secondary"><h5><b>{u.name.toUpperCase()}</b></h5></a></li>
+                            <li><img src={admin} className="imagestyle"/></li>
+                            <li className="nav-item mb-2 mt-3"><a class="nav-link text-secondary" onClick={handleallproducts}><h5>All products</h5></a></li>
+                            <li className="nav-item mb-2 mt-3"><a class="nav-link text-secondary" onClick={handleallcategories}><h5>All Categories</h5></a></li>
+                            <li className="nav-item mb-2 mt-3"><a class="nav-link text-secondary" onClick={handlecart}><h5>Cart</h5></a></li>
+                            <li className="nav-item mb-2 mt-3"><a class="nav-link text-secondary" onClick={handleorders}><h5>Orders</h5></a></li>
+                            
+                            <li className="nav-item mb-2 "><span onClick={handlelogout} >Logout</span></li>
+                            </center>
+                            
+                        </ul>
                 </div>
-            </div>
-            <div className="col-xl-3 col-sm-6 py-2" onClick={handleallcategories}>
-                <div className="card bg-success text-white h-100">
-                    <div className="card-body bg-success" style={{backgroundColor:"#57b960"}}>
-                        
-                        <h6 classname="text-uppercase">ALL CATEGORIES</h6>
-                    </div>
-                </div>
-            </div>
-            <div className="col-xl-3 col-sm-6 py-2" onClick={handlecart}>
-                <div className="card text-white bg-danger h-100">
-                    <div className="card-body bg-danger">
-                        
-                        <h6 className="text-uppercase" >CART<span className='spanstyle'></span></h6>
-                    </div>
-                </div>
-            </div>
-            <div className="col-xl-3 col-sm-6 py-2" onClick={handleorders}>
-                <div className="card text-white bg-info h-100">
-                    <div className="card-body bg-info">
-                        
-                        <h6 className="text-uppercase">ORDERS</h6>
-                        
-                    </div>
-                </div>
-            </div>
-            
-            
-        </div>
+    <div className="col pt-5 mt-3">
         <div className={(s===0 && s!==1 && s!==2 && s!==3)?'dis':'hide'}>
-            <input type="text" value={productsearch} placeholder="search..." onChange={(e)=>setproductsearch(e.target.value)}/>
+            <input type="text" className='form-control form-control-sm' value={productsearch} placeholder="search..." onChange={(e)=>setproductsearch(e.target.value)}/>
             <Container className='p-4'>  
                 <Row>  
                 
             { allproducts&& allproducts.filter(product=>product.name.toLowerCase().includes(productsearch.toLowerCase())).map((product,ui) => (  
-            <Card
+                <Card
                 
                 key={ui}  
                  
@@ -155,7 +179,7 @@ function Dashboard(){
                 <b>{product.description}</b>
                 <br/>
                 <Button className='buttonstyle bg-warning' onClick={()=>handleaddcart(product.id)}>Add To Cart</Button>
-                <Button className='bg-info'>Order</Button>
+                <Button className='bg-info'onClick={()=>{handleorder(product)}}>Order</Button>
                 <br/>
                 </Card.Text> 
                 </center>   
@@ -178,7 +202,7 @@ function Dashboard(){
                     })}
                 </select> 
                 
-            { allproducts&& allproducts.filter(pro=>pro.category_id==catfilter).map((product,ui) => (  
+            { allproducts&& allproducts.filter(pro=>pro.category_id===catfilter).map((product,ui) => (  
             <Card
                 
                 key={ui}  
@@ -190,13 +214,13 @@ function Dashboard(){
                 <Card.Body>
                 <center>
                 <Card.Text>
-                <img src={student1} className="productimage"/>
+                <img src={student1} className="productimage" />
                 <b>{product.price}</b>
                 <br/>
                 <b>{product.description}</b>
                 <br/>
                 <Button className='buttonstyle bg-warning' onClick={()=>handleaddcart(product.id)} >Add To Cart</Button>
-                <Button className='bg-info'>Order</Button>
+                <Button className='bg-info' onClick={()=>handleorder(product)}>Order</Button>
                 
                 </Card.Text> 
                 </center>   
@@ -239,7 +263,48 @@ function Dashboard(){
             
             </Row> 
             <br/>
+            
             <Button className='bg-warning'>Place Order</Button> 
+            </Container>  
+            
+        </div>
+        <div className={(s===3 && s!==1 && s!==0 && s!==4)?'dis':'hide'}>
+        <Container className='p-4'>  
+                <Row>  
+                
+            { allorders&& allorders.map((order,ui) => (   
+            <Card key={ui}  style={{width:"30%"}}  className="m-2 car">  
+                <Card.Header><b><center>{order.product.name}</center></b></Card.Header>  
+                <Card.Body>
+                <Card.Text>
+                <img src={student1} className="productimage"/>
+                <br/>
+                Price:{order.product.price}
+                <br/>
+                Quantity:{order.quantity}
+                <br/>
+                Amount:<b>{order.product.price*order.quantity}</b>
+                <br/>
+                Method:<b>Cash on  Delivery</b>
+                <br/>
+                Address:<b>{order.address.hno} {order.address.village} {order.address.mandal} {order.address.mandal} {order.address.district} {order.address.district} {order.address.state}</b>
+                <br/>
+                pincode:<b>{order.address.pincode}</b>
+                <br/>
+                Ordered on:<b>{order.ordered_at}</b>
+                <br/>
+                Expected by:<b>{order.delivery_date}</b>
+                <br/>
+                <Button className='bg-danger' onClick={()=>handlecancel(order.id)} >Cancel</Button>
+                <br/>
+                </Card.Text> 
+                  
+                </Card.Body>  
+            </Card>  
+            ))}
+            
+            </Row> 
+            <br/> 
             </Container>  
             
         </div>
@@ -254,7 +319,7 @@ function Dashboard(){
                                                 {alladdresses&&alladdresses.map((address,ai)=>{
                                                     return(
                                                         <div className="form-group">
-                                                            <input type='radio' value={address.id}/> {address.hno} {address.village}{address.mandal} {address.District}{address.state} {address.pincode} 
+                                                            <input type='radio' name="radio-btn" id={ai} value={address.id} onClick={()=>setordaddress(address)}/>{address.hno} {address.village} {address.mandal} {address.District}{address.state} {address.pincode} 
     
                                                         </div>  
                                                     )
@@ -267,18 +332,19 @@ function Dashboard(){
                                                 <br/>
                                                 <div className={as===1?'dis':'hide'}>
                                                     <form className="form m-1" >
-                                                        <input type="text" name="hno" placeholder="House Number" className='form-control form-control-sm mt-3'required onChange={(e)=>setaddr({...newaddr,hno:e.target.value})}/>
-                                                        <input type="text" name="village" placeholder="Village" className='form-control form-control-sm mt-3' required onChange={(e)=>setaddr({...newaddr,village:e.target.value})}/>
-                                                        <input type="text" name="mandal" placeholder="Mandal" className='form-control form-control-sm mt-3' required onChange={(e)=>setaddr({...newaddr,mandal:e.target.value})}/>
-                                                        <input type="text" name="district" placeholder="District" className='form-control form-control-sm mt-3' required onChange={(e)=>setaddr({...newaddr,district:e.target.value})}/>
-                                                        <input type="text" name="state" placeholder="State" className='form-control form-control-sm mt-3' required onChange={(e)=>setaddr({...newaddr,state:e.target.value})}/>
+                                                        <input type="text" name="hno" placeholder="House Number" className='form-control form-control-sm mt-3'required onChange={(e)=>setaddr({...newaddr,hno:e.target.value})} autoComplete='new-password'/>
+                                                        <input type="text" name="village" placeholder="Village" className='form-control form-control-sm mt-3' required onChange={(e)=>setaddr({...newaddr,village:e.target.value})} autoComplete='new-password'/>
+                                                        <input type="text" name="mandal" placeholder="Mandal" className='form-control form-control-sm mt-3' required onChange={(e)=>setaddr({...newaddr,mandal:e.target.value})} autoComplete='new-password'/>
+                                                        <input type="text" name="district" placeholder="District" className='form-control form-control-sm mt-3' required onChange={(e)=>setaddr({...newaddr,district:e.target.value})} autoComplete='new-password'/>
+                                                        <input type="text" name="state" placeholder="State" className='form-control form-control-sm mt-3' required onChange={(e)=>setaddr({...newaddr,state:e.target.value})} autoComplete='new-password'/>
                                                         <input type="number" name="pincode" placeholder="Pincode" className='form-control form-control-sm mt-3' required onChange={(e)=>setaddr({...newaddr,pincode:e.target.value})}/>
 
                                                         <button className='btn btn-primary' onClick={()=>{addressadding()}}>ADD</button>
 
                                                     </form>
 
-                                                </div>    
+                                                </div> 
+                                                <button className='btn btn-info butt' onClick={()=>{handleplaceorder(ordering,ordaddress)}}>Placeorder</button>  
                                         </div>  
                                     </div>  
                             </div>  
@@ -288,7 +354,8 @@ function Dashboard(){
         </div>
     
     </div>
-    
+    </div>
+    </div>
     )
 }
  

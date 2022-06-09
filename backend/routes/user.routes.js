@@ -6,8 +6,8 @@ var models=require('../models')
 
 router.get('/allproducts',jwtu,async (req,res)=>{
     try{
-        const a=await models.products.findAll()
-        console.log(a)
+        const a=await models.products.findAll({where:{available_status:true}})
+        
         res.send(a)
 
     }
@@ -60,31 +60,22 @@ router.get('/allcartitems',jwtu,async (req,res)=>{
 
     }
 });
-router.get('/allorders',jwtu,async (req,res)=>{
-    try{
-        const a=await models.orders.findAll()
-        res.send(a)
 
-    }
-    catch(err){
-        res.status(500).send(err)
-
-    }
-});
 router.post('/addaddress',jwtu,async(req,res)=>{
-    console.log(req.body)
+   
     const {hno,village,mandal,district,state,pincode}=req.body;
     const na={
         user_id:parseInt(req.user.id),
-        hone:hno,
+        hno:hno,
         village:village,
         mandal:mandal,
         district:district,
         state:state,
         pincode:pincode
     }
+    
     try{
-
+        
         const rel=await models.addresses.create(na);
         res.send(rel)
 
@@ -170,6 +161,69 @@ router.get('/decquan/:id',jwtu,async (req,res)=>{
             res.send(c)
 
         }
+    }
+    catch(err){
+        res.status(500).send(err)
+
+    }
+})
+router.post('/placeorder',jwtu,async(req,res)=>{
+    
+   const no={
+       user_id:parseInt(req.user.id),
+       product_id:parseInt(req.body.pro.id),
+       address_id:parseInt(req.body.add.id),
+       quantity:parseInt(req.body.pro.quantity),
+       delivered_status:false,
+       ordered_at:new Date(),
+       
+   }     
+    
+    
+    try{
+        const rel=await models.orders.create(no);
+        res.send(rel)
+
+
+    }
+    catch(err){
+        res.status(500).send(err)
+    }
+})
+router.get('/allorders',jwtu,async (req,res)=>{
+    try{
+        const o=await models.orders.findAll({where:{user_id:parseInt(req.user.id)}})
+        const p=await models.products.findAll()
+        const a=await models.addresses.findAll()
+        const allods=[]
+        o.map((order)=>{
+            p.map((po)=>{
+                a.map((ad)=>{
+                    if(order.product_id===po.id&&order.address_id===ad.id){
+                        let date=new Date(order.ordered_at)
+                        date.setDate(date.getDate()+7)
+                        allods.push({id:order.id,product:po,address:ad,quantity:order.quantity,ordered_at:order.ordered_at.getDate()+"/"+order.ordered_at.getMonth()+"/"+order.ordered_at.getFullYear(),delivered_status:order.delivered_status,delivery_date:date.getDate()+"/"+date.getMonth()+"/"+date.getFullYear()})
+                    }
+                })
+            })
+
+            
+            
+
+        })
+        console.log(allods)
+        res.send(allods)
+
+    }
+    catch(err){
+        res.status(500).send(err)
+
+    }
+}) 
+router.delete('/deleteorder/:id',jwtu,async (req,res)=>{
+    try{
+        const c=await models.orders.destroy({where:{id:parseInt(req.params.id)}})
+        res.send(c)
     }
     catch(err){
         res.status(500).send(err)

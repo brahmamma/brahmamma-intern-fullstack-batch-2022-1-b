@@ -23,7 +23,8 @@ export const Navbar = () => {
                     </ul>
                     
                 </div>
-       </nav>
+                <center><h4 className='topbar'>Admin</h4></center>
+            </nav>
     )
 }
 export default Navbar

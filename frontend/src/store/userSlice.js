@@ -7,13 +7,12 @@ export const userSlice= createSlice({
     allcartitems:[],
     allorders:[],
     alladdresses:[],
+    totalamount:0,
   },
   reducers: {
     loadallcartitems: (state,action) => {
       state.allcartitems=[]
       state.allcartitems.push(action.payload);
-      
-      
     },
     loadallproducts: (state,action) => {
       state.allproducts=[]
@@ -203,6 +202,7 @@ export function incquan(id){
 export function addaddress(newadd){
   const token=localStorage.getItem('token')
   const user=localStorage.getItem('user')
+
   return(dispatch)=>{
     fetch('http://localhost:8000/user/addaddress',{
       method:'POST',
@@ -217,9 +217,41 @@ export function addaddress(newadd){
     .then((data)=>dispatch(getalladdresses()))
     .catch((err)=>console.log())
   }
-
-
-
 }
+export function placeorder(pro,add){
+  const ord={pro,add}
+  const token=localStorage.getItem('token')
+  const user=localStorage.getItem('user')
+
+  return(dispatch)=>{
+    fetch('http://localhost:8000/user/placeorder',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+          'token':token,
+          'user':user
+
+      },
+      body:JSON.stringify(ord)
+    }).then((res)=>res.json())
+    .then((data)=>dispatch(getallorders()))
+    .catch((err)=>console.log())
+  }
+}
+export function removefromorders(id){
+  const token=localStorage.getItem('token')
+  const user=localStorage.getItem('user')
+  return(dispatch)=>{
+    fetch(`http://localhost:8000/user/deleteorder/${id}`,{
+      method:'DELETE',
+      headers:{
+        'Content-Type':'application/json',
+        'token':token,
+        'user':user
+      }
+    }
+    ).then((res)=>dispatch(getallorders()))
+  }
+  }
 export const { loadallcartitems,loadallcategories,loadallorders,loadallproducts,loadalladdresses} = userSlice.actions;
 export default userSlice.reducer;
