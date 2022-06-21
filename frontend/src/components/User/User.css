@@ -1,0 +1,124 @@
+.logoutbtn{
+    float:right;
+    margin-right:20px;
+  }
+  .hide{
+    display:none;
+  }
+  .dis{
+    display: block;
+  }
+  
+  .spanstyle{
+    float:right;
+  }
+  .imagestyle{
+    width:80px;
+    height:80px;
+    border-radius:50px;
+  }
+  .side{
+    height:100vh;
+  }
+  .spanstyle{
+    float:right;
+  }
+  .dis{
+    display:block;
+  }
+  .hide{
+    display:none;
+  }
+  .butt{
+    float: left;
+  }
+  .topbar{
+    margin-right:600px;
+  }
+  .imagelogo{
+    width:30px;
+    height:30px;
+    border-radius:30px;
+    margin-bottom:8px;
+  }
+  .orderimage{
+    width:150px;
+    height:150px;
+  }
+  .bghighlight{
+    background-color:navajowhite;
+    color:white;
+    width:227px;
+  }
+  .placebtn{
+    margin-left:40%;
+    background-color: orangered;
+    color: white;
+  }
+  .placebtn:hover{
+    margin-left:40%;
+    background-color: orangered;
+    color: white;
+  }
+  .addressfield{
+    width:100%;
+    height:50%;
+  }
+  .addressfield{
+    width:50%;
+  }
+  .orderbtn{
+    background-color: orangered;
+  }
+  .orderbtn:hover{
+    background-color: orangered;
+  }
+  .buttonstyle:hover{
+    background-color:orange;
+  }
+  .placebutton{
+   
+    background-color: orangered;
+  }
+  .placebutton:hover{
+   
+    background-color: orangered;
+  }
+  .quanbtn{
+    border-radius:100%;
+    background-color: white;
+    font-size: 1em;
+    text-align: center;
+    
+     
+  }
+  .quanbtn:hover{
+    
+    background-color: white;
+    font-size: 1em;
+    font-weight: bold;
+    
+     
+  }
+  .quan{
+    width:50px;
+    height:15px;
+    border: 1px solid black;
+    padding-left:15px;
+    padding-right:15px;
+    padding-top:6px;
+    padding-bottom:6px;
+  }
+  .foo {
+    /* Small Devices, Tablets */
+    @media only screen and (min-width : 768px) {
+      width: 75%;
+      background-color: green;
+    }
+  
+    /* Medium Devices, Desktops */
+    @media only screen and (min-width : 992px) {
+      width: 50%;
+      background-color: pink;
+    }
+  }
